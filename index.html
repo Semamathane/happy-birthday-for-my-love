@@ -1,1 +1,454 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday My Love</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for elegant typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    
+    <script>
+        // Tailwind Configuration for custom romantic colors
+        tailwind.config = {
+            theme: {
+                    colors: {
+                        'rose-gold': '#B76E79',
+                        'soft-pink': '#FFD1DC',
+                        'blush': '#FFE4E1',
+                        'deep-red': '#800020'
+                    },
+                    fontFamily: {
+                        'cursive': ['"Dancing Script"', 'cursive'],
+                        'serif': ['"Lora"', 'serif'],
+                    }
+                }
+            }
+        </script>
+
+    <style>
+        body {
+            scroll-behavior: smooth;
+            /* Prevent horizontal scrolling when the button runs away */
+            overflow-x: hidden; 
+        }
+
+        /* Floating emojis background animation */
+        .floating-emoji {
+            position: fixed;
+            bottom: -10vh;
+            font-size: 2rem;
+            animation: floatUp linear infinite;
+            z-index: -1;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0.8) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-110vh) scale(1.2) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Reveal on scroll animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s cubic-bezier(0.5, 0, 0, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Interactive Card Flip effect for the reasons */
+        .reason-card {
+            perspective: 1000px;
+            height: 200px;
+            cursor: pointer;
+        }
+        
+        .reason-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 10px 25px rgba(183, 110, 121, 0.15);
+            border-radius: 1rem;
+        }
+
+        .reason-card.flipped .reason-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .reason-card-front, .reason-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .reason-card-front {
+            background-color: white;
+            color: #B76E79;
+        }
+
+        .reason-card-front:hover {
+            background-color: #fff5f7;
+            transform: scale(1.02);
+            transition: all 0.3s ease;
+        }
+
+        .reason-card-back {
+            background: linear-gradient(135deg, #B76E79, #d68995);
+            color: white;
+            transform: rotateY(180deg);
+            font-family: 'Lora', serif;
+            font-size: 1.1rem;
+        }
+        
+        .heart-beat {
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.3); }
+            70% { transform: scale(1); }
+        }
+
+        /* Dodging button smooth movement */
+        #no-btn {
+            transition: top 0.2s ease, left 0.2s ease;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-blush to-pink-100 min-h-screen text-gray-800 font-serif">
+
+    <!-- Container for floating background emojis injected by JS -->
+    <div id="emojis-container"></div>
+
+    <!-- 1. Landing Page (Parent Page) -->
+    <section id="landing-page" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-pink-50 via-blush to-pink-100 transition-opacity duration-1000">
+        <div class="text-center z-10 px-4">
+            <h2 class="text-2xl md:text-3xl font-serif text-rose-gold mb-2 tracking-widest uppercase">To my favorite person</h2>
+            <h1 class="text-6xl md:text-8xl font-cursive text-deep-red mb-6 drop-shadow-sm">Happy Birthday</h1>
+            <p class="text-xl md:text-2xl text-gray-700 max-w-2xl mx-auto mb-10 italic">
+                "In all the world, there is no heart for me like yours. <br class="hidden md:block"> In all the world, there is no love for you like mine."
+            </p>
+            <button id="begin-btn" class="inline-block bg-rose-gold text-white px-10 py-4 rounded-full text-lg font-sans tracking-wide shadow-lg shadow-rose-gold/30 hover:bg-deep-red hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                Begin the Journey <span class="ml-2 inline-block animate-bounce">↓</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- 2. Main Content (Hidden Initially) -->
+    <main id="main-content" class="hidden opacity-0 transition-opacity duration-1000 pt-10">
+        
+        <!-- Date Request Section -->
+        <section id="date-section" class="min-h-[80vh] flex flex-col items-center justify-center px-4 py-20">
+            <div class="text-center reveal active w-full max-w-2xl bg-white/40 backdrop-blur-md p-10 rounded-3xl shadow-sm border border-white/50">
+                <h2 class="text-4xl md:text-5xl font-cursive text-deep-red mb-8">Before we continue...</h2>
+                <p class="text-2xl font-serif text-rose-gold mb-12">Will you go on a birthday date with me?</p>
+                
+                <!-- Interactive Button Area -->
+                <div id="interactive-area" class="relative w-full h-40 flex items-center justify-center">
+                    
+                    <div id="button-container" class="relative w-full h-full flex justify-center items-center gap-8">
+                        <button id="yes-btn" class="bg-rose-gold text-white px-10 py-3 rounded-full font-sans font-bold text-xl shadow-lg hover:bg-deep-red transition-colors z-20">
+                            Yes!
+                        </button>
+                        <!-- No button starts relatively positioned, switches to absolute via JS -->
+                        <button id="no-btn" class="bg-gray-400 text-white px-10 py-3 rounded-full font-sans font-bold text-xl shadow-lg z-10">
+                            No
+                        </button>
+                    </div>
+
+                    <!-- Success Message (Hidden initially) -->
+                    <div id="success-message" class="absolute inset-0 flex flex-col items-center justify-center hidden">
+                        <div class="text-5xl mb-4 animate-bounce">🥳🎉❤️</div>
+                        <h3 class="text-3xl font-cursive text-deep-red">Yay! I can't wait for our date!</h3>
+                        <p class="text-gray-600 mt-2">Scroll down for more surprises...</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Reasons Section (Interactive) -->
+        <section id="reasons" class="py-24">
+            <div class="max-w-5xl mx-auto px-4">
+                <div class="text-center mb-16 reveal">
+                    <h2 class="text-5xl font-cursive text-deep-red mb-4">Reasons Why I Love You</h2>
+                    <p class="text-lg text-gray-600">Click on the hearts to reveal...</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+                    <!-- Reason 1 -->
+                    <div class="reveal reason-card" onclick="this.classList.toggle('flipped')">
+                        <div class="reason-card-inner">
+                            <div class="reason-card-front flex-col">
+                                <svg class="w-16 h-16 text-rose-gold heart-beat mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                <span class="font-cursive text-2xl">Reason #1</span>
+                            </div>
+                            <div class="reason-card-back">
+                                <p class="px-4">You have the most beautiful smile that lights up any room you walk into.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reason 2 -->
+                    <div class="reveal reason-card delay-100" onclick="this.classList.toggle('flipped')">
+                        <div class="reason-card-inner">
+                            <div class="reason-card-front flex-col">
+                                <svg class="w-16 h-16 text-rose-gold heart-beat mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                <span class="font-cursive text-2xl">Reason #2</span>
+                            </div>
+                            <div class="reason-card-back">
+                                <p class="px-4">How you always support my dreams and believe in me even when I don't.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reason 3 -->
+                    <div class="reveal reason-card delay-200" onclick="this.classList.toggle('flipped')">
+                        <div class="reason-card-inner">
+                            <div class="reason-card-front flex-col">
+                                <svg class="w-16 h-16 text-rose-gold heart-beat mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                <span class="font-cursive text-2xl">Reason #3</span>
+                            </div>
+                            <div class="reason-card-back">
+                                <p class="px-4">The way you laugh at my terrible jokes.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reason 4 -->
+                    <div class="reveal reason-card" onclick="this.classList.toggle('flipped')">
+                        <div class="reason-card-inner">
+                            <div class="reason-card-front flex-col">
+                                <svg class="w-16 h-16 text-rose-gold heart-beat mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                <span class="font-cursive text-2xl">Reason #4</span>
+                            </div>
+                            <div class="reason-card-back">
+                                <p class="px-4">Your endless kindness and compassion for everyone around you.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reason 5 -->
+                    <div class="reveal reason-card delay-100" onclick="this.classList.toggle('flipped')">
+                        <div class="reason-card-inner">
+                            <div class="reason-card-front flex-col">
+                                <svg class="w-16 h-16 text-rose-gold heart-beat mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                <span class="font-cursive text-2xl">Reason #5</span>
+                            </div>
+                            <div class="reason-card-back">
+                                <p class="px-4">Because holding your hand makes everything feel right in the world.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reason 6 -->
+                    <div class="reveal reason-card delay-200" onclick="this.classList.toggle('flipped')">
+                        <div class="reason-card-inner">
+                            <div class="reason-card-front flex-col">
+                                <svg class="w-16 h-16 text-rose-gold heart-beat mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                <span class="font-cursive text-2xl">Reason #6</span>
+                            </div>
+                            <div class="reason-card-back">
+                                <p class="px-4">Simply because you are you. Perfectly, wonderfully you.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Digital Love Letter Section -->
+        <section id="letter" class="py-24 px-4 max-w-4xl mx-auto mb-20">
+            <div class="reveal bg-[#fdfbf7] p-8 md:p-16 rounded-3xl shadow-2xl relative overflow-hidden">
+                <!-- Decorative borders for the letter -->
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-rose-gold to-transparent opacity-50"></div>
+                <div class="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-rose-gold to-transparent opacity-50"></div>
+                
+                <div class="text-center mb-8">
+                    <svg class="w-12 h-12 text-rose-gold/50 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"/></svg>
+                    <h2 class="text-4xl font-cursive text-deep-red">My Letter to You</h2>
+                </div>
+                
+                <div class="prose prose-lg mx-auto text-gray-700 leading-loose">
+                    <p class="font-cursive text-2xl mb-6 text-rose-gold">My Dearest,</p>
+                    
+                    <p>Happy Birthday! I wanted to do something a little different this year to show you just how much you mean to me. Words on a standard card didn't seem like enough, so I built this little corner of the internet just for you.</p>
+                    
+                    <p>Every single day with you feels like a gift. You bring so much light, warmth, and joy into my life. Watching you grow, overcome challenges, and spread kindness makes me so incredibly proud to be yours.</p>
+                    
+                    <p>As you blow out your candles today, I hope you know that my biggest wish has already come true—having you by my side. I promise to keep finding new reasons to love you, and to always be your biggest supporter.</p>
+                    
+                    <p>Here's to you, to us, and to a beautiful year ahead. I love you more than words could ever express.</p>
+                    
+                    <p class="font-cursive text-3xl mt-12 text-right text-rose-gold">Forever Yours,<br> <span class="text-2xl text-gray-800">[Your Name]</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-8 text-center text-gray-500 text-sm pb-12">
+            <p>Made with <span class="text-rose-gold text-lg">♥</span> just for you. Happy Birthday.</p>
+        </footer>
+
+    </main>
+
+    <!-- Interactive JavaScript -->
+    <script>
+        // 1. Floating Emojis Animation Generator (Replaced Hearts)
+        function createFloatingEmojis() {
+            const container = document.getElementById('emojis-container');
+            const emojis = ['🎂', '🎉', '🎁', '🥳', '🎈'];
+            const numberOfEmojis = 25;
+
+            for (let i = 0; i < numberOfEmojis; i++) {
+                const emojiElement = document.createElement('div');
+                emojiElement.classList.add('floating-emoji');
+                emojiElement.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                
+                const leftPos = Math.random() * 100;
+                const animDuration = 10 + Math.random() * 15; 
+                const animDelay = Math.random() * 20; 
+                const fontSize = 1.5 + Math.random() * 1.5; 
+
+                emojiElement.style.left = `${leftPos}vw`;
+                emojiElement.style.animationDuration = `${animDuration}s`;
+                emojiElement.style.animationDelay = `${animDelay}s`;
+                emojiElement.style.fontSize = `${fontSize}rem`;
+
+                container.appendChild(emojiElement);
+            }
+        }
+
+        // 2. Page Reveal Logic (Landing Page -> Main Content)
+        const beginBtn = document.getElementById('begin-btn');
+        const landingPage = document.getElementById('landing-page');
+        const mainContent = document.getElementById('main-content');
+
+        beginBtn.addEventListener('click', () => {
+            // Fade out landing page
+            landingPage.classList.add('opacity-0');
+            
+            setTimeout(() => {
+                // Hide landing page completely
+                landingPage.style.display = 'none';
+                
+                // Show main content and trigger fade in
+                mainContent.classList.remove('hidden');
+                // Force a browser reflow to ensure the transition works
+                void mainContent.offsetWidth; 
+                mainContent.classList.remove('opacity-0');
+                
+                // Initialize scroll reveal for elements that are now visible
+                setupScrollReveal();
+            }, 1000); // Wait for fade out transition (matches duration-1000)
+        });
+
+        // 3. Dodging "No" Button Logic
+        const noBtn = document.getElementById('no-btn');
+        const yesBtn = document.getElementById('yes-btn');
+        const buttonContainer = document.getElementById('interactive-area');
+        const dateButtons = document.getElementById('button-container');
+        const successMessage = document.getElementById('success-message');
+        
+        let isAbsolute = false;
+
+        function moveButton() {
+            // Switch to absolute positioning on first interaction so it can break out of the flex layout
+            if (!isAbsolute) {
+                noBtn.style.position = 'absolute';
+                isAbsolute = true;
+            }
+
+            // Get boundaries of the interactive area
+            const containerRect = buttonContainer.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+
+            // Calculate max X and Y keeping the button fully inside the container
+            const maxX = containerRect.width - btnRect.width;
+            const maxY = containerRect.height - btnRect.height;
+
+            // Generate random positions
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+
+            // Apply new positions
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+        }
+
+        // Add events for both mouse hover and mobile touch
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevent standard touch behavior
+            moveButton();
+        });
+
+        // 4. "Yes" Button Click Logic
+        yesBtn.addEventListener('click', () => {
+            // Hide the buttons
+            dateButtons.classList.add('hidden');
+            // Show the success message
+            successMessage.classList.remove('hidden');
+        });
+
+        // 5. Scroll Reveal Animation using Intersection Observer
+        function setupScrollReveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            const revealOptions = {
+                threshold: 0.15,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); 
+                });
+            }, revealOptions);
+
+            reveals.forEach(reveal => {
+                revealOnScroll.observe(reveal);
+            });
+        }
+
+        // Initialize background emojis on load
+        window.addEventListener('DOMContentLoaded', () => {
+            createFloatingEmojis();
+        });
+    </script>
+</body>
+</html>          
 
